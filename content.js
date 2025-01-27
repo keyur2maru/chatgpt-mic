@@ -37,28 +37,43 @@ function initializeSpeechRecognition(button) {
         recognition.interimResults = true;
         recognition.lang = 'en-US';
 
+        let accumulatedTranscript = "";
+
+        // Add event listener for Enter key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                // Reset accumulated transcript and recognition
+                accumulatedTranscript = "";
+            }
+        });
+
         recognition.onresult = (event) => {
-            let final = "";
-            let interim = "";
+            let currentFinal = "";
+            let currentInterim = "";
             
             for (let i = event.resultIndex; i < event.results.length; ++i) {
                 if (event.results[i].isFinal) {
-                    final += event.results[i][0].transcript;
+                    currentFinal += event.results[i][0].transcript;
                 } else {
-                    interim += event.results[i][0].transcript;
+                    currentInterim += event.results[i][0].transcript;
                 }
+            }
+
+            // Add any new final transcript to accumulated
+            if (currentFinal) {
+                accumulatedTranscript += currentFinal;
             }
 
             const editor = document.querySelector('.ProseMirror');
             if (editor) {
-                editor.textContent = final + interim;
+                // Show accumulated transcript plus any current interim results
+                editor.textContent = accumulatedTranscript + currentInterim;
                 const inputEvent = new Event('input', { bubbles: true });
                 editor.dispatchEvent(inputEvent);
             }
         };
 
         recognition.onend = () => {
-            // Only restart if we're still supposed to be listening
             if (isListening) {
                 recognition.start();
             }
@@ -73,7 +88,6 @@ function initializeSpeechRecognition(button) {
         button.addEventListener('click', (e) => {
             e.preventDefault();
             if (!isListening) {
-                finalTranscript = ''; // Reset transcript when starting new recording
                 recognition.start();
                 isListening = true;
             } else {
