@@ -1,0 +1,18 @@
+{
+    "manifest_version": 3,
+    "name": "ChatGPT Voice Input",
+    "version": "1.0",
+    "description": "Adds voice input to ChatGPT",
+    "icons": {
+      "128": "icon.png"
+    },
+    "content_scripts": [
+      {
+        "matches": ["https://chat.openai.com/*", "https://chatgpt.com/*"],
+        "css": ["styles.css"],
+        "js": ["content.js"]
+      }
+    ],
+    "permissions": ["activeTab"],
+    "host_permissions": ["https://chat.openai.com/*", "https://chatgpt.com/*"]
+  }
