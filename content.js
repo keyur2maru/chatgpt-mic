@@ -113,18 +113,22 @@ function createMicButton() {
     return micButton;
 }
 
+
 function ensureMicButtonExists() {
-    // Find the container that holds all the control buttons
-    const controlsContainer = document.querySelector('.flex.gap-x-1:has([data-testid="composer-speech-button"])');
-    if (!controlsContainer) return;
+    // First find the speech button and its container div
+    const speechButton = document.querySelector('button[data-testid="composer-speech-button"]');
+    if (!speechButton) return;
+    
+    const speechButtonDiv = speechButton.closest('.min-w-8');
+    if (!speechButtonDiv) return;
 
     // Check if our button already exists
-    let micButton = controlsContainer.querySelector('[data-extension-mic="true"]');
+    let micButton = document.querySelector('[data-extension-mic="true"]');
     
     if (!micButton) {
         micButton = createMicButton();
-        // Add as first child of the controls container
-        controlsContainer.prepend(micButton);
+        // Insert before the min-w-8 div that contains the speech button
+        speechButtonDiv.parentNode.insertBefore(micButton, speechButtonDiv);
         initializeSpeechRecognition(micButton);
     }
 }
