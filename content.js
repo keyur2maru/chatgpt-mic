@@ -115,20 +115,21 @@ function createMicButton() {
 
 
 function ensureMicButtonExists() {
-    // First find the speech button and its container div
-    const speechButton = document.querySelector('button[data-testid="composer-speech-button"]');
-    if (!speechButton) return;
-    
-    const speechButtonDiv = speechButton.closest('.min-w-8');
-    if (!speechButtonDiv) return;
+    // Find the container with the voice mode button
+    const voiceModeContainer = document.querySelector('.absolute.bottom-0.right-3');
+    if (!voiceModeContainer) return;
+
+    // Find the voice mode button
+    const voiceModeButton = document.querySelector('[data-testid="composer-speech-button"]');
+    if (!voiceModeButton) return;
 
     // Check if our button already exists
     let micButton = document.querySelector('[data-extension-mic="true"]');
     
     if (!micButton) {
         micButton = createMicButton();
-        // Insert before the min-w-8 div that contains the speech button
-        speechButtonDiv.parentNode.insertBefore(micButton, speechButtonDiv);
+        // Insert before the voice mode button
+        voiceModeButton.parentNode.insertBefore(micButton, voiceModeButton);
         initializeSpeechRecognition(micButton);
     }
 }
